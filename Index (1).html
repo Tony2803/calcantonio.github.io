@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<head>
+  <title>Calculadora de hidratación</title>
+  <link rel="stylesheet" href="./astyle (1).css" />
+</head>
+<script src="./script.js" defer></script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Basal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calculadora Basal</h1>
+  <h2>¿Como se calcula?</h2>
+<ul>
+    <li>De 0kg a 10kg, se calcula 100cc por cada kilo.</li>
+    <li>Se suman 50cc por cada kilo de peso por arriba de 10kg, hasta 20kg</li>
+    <li>De 20kg para arriba, se suman 20cc por cada kilo adicional</li>
+</ul>
+
+  
+  <label for="peso">Peso del niño (kg):</label>
+  <input type="number" id="peso" placeholder="Ingrese el peso en kg">
+
+  <button onclick="calcular()">Calcular</button>
+
+  <h2>Resultados:</h2>
+  <div id="resultados"></div>
+
+  <script>
+    function calcular() {
+      var peso = parseFloat(document.getElementById('peso').value);
+
+      if (isNaN(peso) || peso <= 0) {
+        alert('Por favor, ingrese un peso válido.');
+        return;
+      }
+
+      var volumenDiario, mantenimiento, mmMedioMantenimiento, metodo;
+
+      if (peso <= 10) {
+        volumenDiario = peso * 100;
+        mantenimiento = volumenDiario / 24;
+        mmMedioMantenimiento = mantenimiento * 1.5;
+        metodo = 'Holliday-Segar';
+      } else if (peso <= 30) {
+        volumenDiario = (10 * 100) + ((peso - 10) * 50);
+        mantenimiento = volumenDiario / 24;
+        mmMedioMantenimiento = mantenimiento * 1.5;
+        metodo = 'Holliday-Segar';
+      } else {
+        var superficieCorporal = ((peso * 4) + 7) / (peso + 90);
+        volumenDiario = {
+          '1500': superficieCorporal * 1500,
+          '2000': superficieCorporal * 2000
+        };
+        metodo = 'Superficie Corporal';
+      }
+
+      mostrarResultados(volumenDiario, mantenimiento, mmMedioMantenimiento, metodo);
+    }
+
+    function mostrarResultados(volumenDiario, mantenimiento, mmMedioMantenimiento, metodo) {
+      var resultadosDiv = document.getElementById('resultados');
+      resultadosDiv.innerHTML = '';
+
+      if (metodo === 'Holliday-Segar') {
+        resultadosDiv.innerHTML += `<p>Volumen Diario: ${volumenDiario.toFixed(2)} cc</p>`;
+        resultadosDiv.innerHTML += `<p>Mantenimiento: ${mantenimiento.toFixed(2)} cc/hr</p>`;
+        resultadosDiv.innerHTML += `<p>m+m/2: ${mmMedioMantenimiento.toFixed(2)} cc/hr</p>`;
+      } else {
+        resultadosDiv.innerHTML += `<p>Método: ${metodo}</p>`;
+        resultadosDiv.innerHTML += `<p>Volumen Diario (1500): ${volumenDiario['1500'].toFixed(2)} cc</p>`;
+        resultadosDiv.innerHTML += `<p>Volumen Diario (2000): ${volumenDiario['2000'].toFixed(2)} cc</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
